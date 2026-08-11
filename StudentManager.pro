@@ -14,10 +14,12 @@ SOURCES += \
     ui/TeacherPage.cpp \
     ui/StudentPage.cpp \
     ui/CoursePage.cpp \
+    ui/ScorePage.cpp \
     dialogs/ClassEditDialog.cpp \
     dialogs/TeacherEditDialog.cpp \
     dialogs/StudentEditDialog.cpp \
-    dialogs/CourseEditDialog.cpp
+    dialogs/CourseEditDialog.cpp \
+    dialogs/ScoreEditDialog.cpp
 
 HEADERS += \
     database/DbManager.h \
@@ -29,7 +31,9 @@ HEADERS += \
     ui/TeacherPage.h \
     ui/StudentPage.h \
     ui/CoursePage.h \
+    ui/ScorePage.h \
     dialogs/ClassEditDialog.h \
     dialogs/TeacherEditDialog.h \
     dialogs/StudentEditDialog.h \
-    dialogs/CourseEditDialog.h
+    dialogs/CourseEditDialog.h \
+    dialogs/ScoreEditDialog.h

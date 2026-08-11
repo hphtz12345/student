@@ -3,6 +3,7 @@
 #include "TeacherPage.h"
 #include "StudentPage.h"
 #include "CoursePage.h"
+#include "ScorePage.h"
 #include <QListWidget>
 #include <QStackedWidget>
 #include <QHBoxLayout>
@@ -28,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     addPage(new TeacherPage, "教师管理");
     addPage(new ClassPage, "班级管理");
     addPage(new CoursePage, "课程管理");
-    addPage(new QLabel("成绩管理"), "成绩管理");
+    addPage(new ScorePage, "成绩管理");
     addPage(new QLabel("统计分析"), "统计分析");
 
     connect(m_nav, &QListWidget::currentRowChanged,
