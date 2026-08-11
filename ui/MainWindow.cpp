@@ -7,7 +7,6 @@
 #include "StatisticsPage.h"
 #include "UserPage.h"
 #include "../database/DbManager.h"
-#include <QPushButton>
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QStackedWidget>
@@ -62,12 +61,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(m_nav, &QListWidget::currentRowChanged,
             m_stack, &QStackedWidget::setCurrentIndex);
     connect(m_nav, &QListWidget::currentRowChanged, this, [this](int row) {
-        statusBar()->showMessage(QString("当前页面: %1").arg(m_nav->item(row)->text()));
+        const QString roleText = DbManager::currentRole() == "admin" ? "管理员" : "普通用户";
+        statusBar()->showMessage(QString("当前用户: %1(%2) | 当前页面: %3")
+                                     .arg(DbManager::currentUser(), roleText, m_nav->item(row)->text()));
     });
     m_nav->setCurrentRow(0);
-    // 状态栏显示当前用户和角色
-    const QString roleText = isAdmin ? "管理员" : "普通用户";
-    statusBar()->showMessage(QString("当前用户: %1(%2)").arg(DbManager::currentUser(), roleText));
 }
 
 void MainWindow::addPage(QWidget *page, const QString &title, const QString &icon) {
