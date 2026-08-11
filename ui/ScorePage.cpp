@@ -3,6 +3,7 @@
 #include "../database/DbManager.h"
 #include "../dialogs/ScoreEditDialog.h"
 #include <QLabel>
+#include <QFrame>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QTableView>
@@ -14,6 +15,12 @@
 #include <QSqlQuery>
 
 ScorePage::ScorePage(QWidget *parent) : QWidget(parent) {
+    auto *title = new QLabel("成绩管理");
+    title->setObjectName("pageTitle");
+    auto *titleLine = new QFrame;
+    titleLine->setObjectName("titleLine");
+    titleLine->setFrameShape(QFrame::NoFrame);
+
     m_classFilter = new QComboBox;
     m_courseFilter = new QComboBox;
     m_semesterFilter = new QLineEdit;
@@ -53,6 +60,10 @@ ScorePage::ScorePage(QWidget *parent) : QWidget(parent) {
     m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     auto *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(16, 12, 16, 12);
+    layout->addWidget(title);
+    layout->addWidget(titleLine);
+    layout->addSpacing(6);
     layout->addLayout(bar);
     layout->addWidget(m_view, 1);
 

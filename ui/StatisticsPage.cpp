@@ -86,7 +86,7 @@ static void attachHBarLabels(QChart *chart) {
 
 StatisticsPage::StatisticsPage(QWidget *parent) : QWidget(parent) {
     auto *title = new QLabel("统计分析");
-    title->setStyleSheet("font-size: 16px; font-weight: bold;");
+    title->setObjectName("pageTitle");
 
     m_courseCombo = new QComboBox;
     reloadFilters();
@@ -109,6 +109,7 @@ StatisticsPage::StatisticsPage(QWidget *parent) : QWidget(parent) {
     }
 
     auto *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(16, 12, 16, 12);
     layout->addLayout(bar);
     layout->addWidget(m_tabs, 1);
 

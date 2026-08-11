@@ -11,5 +11,5 @@ public:
 private:
     QListWidget *m_nav;
     QStackedWidget *m_stack;
-    void addPage(QWidget *page, const QString &title);
+    void addPage(QWidget *page, const QString &title, const QString &icon = QString());
 };

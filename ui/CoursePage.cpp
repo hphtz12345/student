@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QTableView>
 #include <QPushButton>
+#include <QLabel>
+#include <QFrame>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -12,6 +14,12 @@
 #include <QSqlQuery>
 
 CoursePage::CoursePage(QWidget *parent) : QWidget(parent) {
+    auto *title = new QLabel("课程管理");
+    title->setObjectName("pageTitle");
+    auto *titleLine = new QFrame;
+    titleLine->setObjectName("titleLine");
+    titleLine->setFrameShape(QFrame::NoFrame);
+
     m_search = new QLineEdit;
     m_search->setPlaceholderText("搜索课程编号/课程名称/教师");
 
@@ -43,6 +51,10 @@ CoursePage::CoursePage(QWidget *parent) : QWidget(parent) {
     m_view->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     auto *layout = new QVBoxLayout(this);
+    layout->setContentsMargins(16, 12, 16, 12);
+    layout->addWidget(title);
+    layout->addWidget(titleLine);
+    layout->addSpacing(6);
     layout->addLayout(bar);
     layout->addWidget(m_view, 1);
 
