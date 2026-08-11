@@ -4,6 +4,9 @@
 #include <QRandomGenerator>
 #include <QSqlError>
 
+QString DbManager::m_sessionUser;
+QString DbManager::m_sessionRole;
+
 DbManager &DbManager::instance() {
     static DbManager mgr;
     return mgr;
@@ -76,3 +79,11 @@ QString DbManager::generateSalt() {
     QRandomGenerator::global()->fillRange(reinterpret_cast<quint32 *>(bytes.data()), 4);
     return QString::fromLatin1(bytes.toHex()); // 32 字符 hex
 }
+
+void DbManager::setSession(const QString &user, const QString &role) {
+    m_sessionUser = user;
+    m_sessionRole = role;
+}
+
+QString DbManager::currentUser() { return m_sessionUser; }
+QString DbManager::currentRole() { return m_sessionRole; }

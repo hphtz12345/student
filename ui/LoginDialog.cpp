@@ -1,5 +1,6 @@
 #include "LoginDialog.h"
 #include "../database/DbManager.h"
+#include <QSqlQuery>
 #include <QFormLayout>
 #include <QLineEdit>
 #include <QLabel>
@@ -61,17 +62,19 @@ void LoginDialog::onLogin() {
         return;
     }
     auto &db = DbManager::instance();
-    const QString salt = db.queryValue(
-        "SELECT salt FROM users WHERE username=?", {user}).toString();
-    if (salt.isEmpty()) {
+    QSqlQuery q = db.execQuery("SELECT salt, role FROM users WHERE username=?", {user});
+    if (!q.next()) {
         m_statusLabel->setText("用户不存在");
         return;
     }
+    const QString salt = q.value("salt").toString();
+    const QString role = q.value("role").toString();
     const QString hash = DbManager::hashPassword(pass, salt);
     const int cnt = db.queryValue(
         "SELECT COUNT(*) FROM users WHERE username=? AND password_hash=?",
         {user, hash}).toInt();
     if (cnt == 1) {
+        DbManager::setSession(user, role);
         accept();
     } else {
         m_statusLabel->setText("密码错误");

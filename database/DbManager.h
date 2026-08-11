@@ -30,7 +30,14 @@ public:
     static QString hashPassword(const QString &password, const QString &salt);
     static QString generateSalt();
 
+    static void setSession(const QString &user, const QString &role);
+    static QString currentUser();
+    static QString currentRole();
+
 private:
+    static QString m_sessionUser;
+    static QString m_sessionRole;
+
     DbManager() = default;
     QSqlDatabase m_db;
     DbConfig m_cfg;
