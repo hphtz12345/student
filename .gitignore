@@ -2,3 +2,7 @@ release/
 debug/
 drivers/libmysql.a
 drivers/libmysql.def
+Makefile
+Makefile.Debug
+Makefile.Release
+.qmake.stash
