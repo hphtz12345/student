@@ -26,9 +26,9 @@ ScorePage::ScorePage(QWidget *parent) : QWidget(parent) {
     m_semesterFilter = new QLineEdit;
     m_semesterFilter->setPlaceholderText("学期(留空为全部)");
 
-    auto *btnAdd = new QPushButton("录入");
-    auto *btnEdit = new QPushButton("修改");
-    auto *btnDel = new QPushButton("删除");
+    m_btnAdd = new QPushButton("录入");
+    m_btnEdit = new QPushButton("修改");
+    m_btnDel = new QPushButton("删除");
     auto *btnRefresh = new QPushButton("刷新");
 
     auto *bar = new QHBoxLayout;
@@ -37,9 +37,9 @@ ScorePage::ScorePage(QWidget *parent) : QWidget(parent) {
     bar->addWidget(new QLabel("课程:"));
     bar->addWidget(m_courseFilter);
     bar->addWidget(m_semesterFilter);
-    bar->addWidget(btnAdd);
-    bar->addWidget(btnEdit);
-    bar->addWidget(btnDel);
+    bar->addWidget(m_btnAdd);
+    bar->addWidget(m_btnEdit);
+    bar->addWidget(m_btnDel);
     bar->addWidget(btnRefresh);
 
     m_model = new TableModel(this);
@@ -67,9 +67,9 @@ ScorePage::ScorePage(QWidget *parent) : QWidget(parent) {
     layout->addLayout(bar);
     layout->addWidget(m_view, 1);
 
-    connect(btnAdd, &QPushButton::clicked, this, &ScorePage::onAdd);
-    connect(btnEdit, &QPushButton::clicked, this, &ScorePage::onEdit);
-    connect(btnDel, &QPushButton::clicked, this, &ScorePage::onDelete);
+    connect(m_btnAdd, &QPushButton::clicked, this, &ScorePage::onAdd);
+    connect(m_btnEdit, &QPushButton::clicked, this, &ScorePage::onEdit);
+    connect(m_btnDel, &QPushButton::clicked, this, &ScorePage::onDelete);
     connect(btnRefresh, &QPushButton::clicked, this, &ScorePage::refresh);
     connect(m_classFilter, &QComboBox::currentIndexChanged, this, &ScorePage::refresh);
     connect(m_courseFilter, &QComboBox::currentIndexChanged, this, &ScorePage::refresh);
@@ -104,6 +104,13 @@ void ScorePage::reloadFilters() {
             m_courseFilter->setCurrentIndex(m_courseFilter->count() - 1);
     }
     m_courseFilter->blockSignals(false);
+}
+
+void ScorePage::setReadOnly(bool ro) {
+    m_readOnly = ro;
+    m_btnAdd->setEnabled(!ro);
+    m_btnEdit->setEnabled(!ro);
+    m_btnDel->setEnabled(!ro);
 }
 
 void ScorePage::refresh() {

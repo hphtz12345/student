@@ -10,6 +10,7 @@ class StudentPage : public QWidget {
     Q_OBJECT
 public:
     explicit StudentPage(QWidget *parent = nullptr);
+    void setReadOnly(bool ro);
 public slots:
     void refresh();
 private slots:
@@ -20,4 +21,8 @@ private:
     QLineEdit *m_search;
     QTableView *m_view;
     TableModel *m_model;
+    QPushButton *m_btnAdd;
+    QPushButton *m_btnEdit;
+    QPushButton *m_btnDel;
+    bool m_readOnly = false;
 };

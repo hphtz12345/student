@@ -11,6 +11,7 @@ class ScorePage : public QWidget {
     Q_OBJECT
 public:
     explicit ScorePage(QWidget *parent = nullptr);
+    void setReadOnly(bool ro);
 public slots:
     void refresh();
 private slots:
@@ -24,4 +25,8 @@ private:
     QLineEdit *m_semesterFilter;
     QTableView *m_view;
     TableModel *m_model;
+    QPushButton *m_btnAdd;
+    QPushButton *m_btnEdit;
+    QPushButton *m_btnDel;
+    bool m_readOnly = false;
 };

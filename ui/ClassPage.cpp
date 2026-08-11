@@ -23,16 +23,16 @@ ClassPage::ClassPage(QWidget *parent) : QWidget(parent) {
     m_search = new QLineEdit;
     m_search->setPlaceholderText("搜索班级名称/专业");
 
-    auto *btnAdd = new QPushButton("新增");
-    auto *btnEdit = new QPushButton("修改");
-    auto *btnDel = new QPushButton("删除");
+    m_btnAdd = new QPushButton("新增");
+    m_btnEdit = new QPushButton("修改");
+    m_btnDel = new QPushButton("删除");
     auto *btnRefresh = new QPushButton("刷新");
 
     auto *bar = new QHBoxLayout;
     bar->addWidget(m_search);
-    bar->addWidget(btnAdd);
-    bar->addWidget(btnEdit);
-    bar->addWidget(btnDel);
+    bar->addWidget(m_btnAdd);
+    bar->addWidget(m_btnEdit);
+    bar->addWidget(m_btnDel);
     bar->addWidget(btnRefresh);
 
     m_model = new TableModel(this);
@@ -59,12 +59,19 @@ ClassPage::ClassPage(QWidget *parent) : QWidget(parent) {
     layout->addWidget(m_view, 1);
 
     connect(m_search, &QLineEdit::textChanged, this, &ClassPage::refresh);
-    connect(btnAdd, &QPushButton::clicked, this, &ClassPage::onAdd);
-    connect(btnEdit, &QPushButton::clicked, this, &ClassPage::onEdit);
-    connect(btnDel, &QPushButton::clicked, this, &ClassPage::onDelete);
+    connect(m_btnAdd, &QPushButton::clicked, this, &ClassPage::onAdd);
+    connect(m_btnEdit, &QPushButton::clicked, this, &ClassPage::onEdit);
+    connect(m_btnDel, &QPushButton::clicked, this, &ClassPage::onDelete);
     connect(btnRefresh, &QPushButton::clicked, this, &ClassPage::refresh);
 
     refresh();
+}
+
+void ClassPage::setReadOnly(bool ro) {
+    m_readOnly = ro;
+    m_btnAdd->setEnabled(!ro);
+    m_btnEdit->setEnabled(!ro);
+    m_btnDel->setEnabled(!ro);
 }
 
 void ClassPage::refresh() {
