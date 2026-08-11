@@ -85,7 +85,7 @@ void UserPage::refresh() {
 }
 
 void UserPage::onAdd() {
-    UserEditDialog dlg(QVariantMap(), this);
+    UserEditDialog dlg(QVariantMap(), false, this);
     if (dlg.exec() != QDialog::Accepted) return;
     QVariantMap f = dlg.fields();
     const QString salt = DbManager::generateSalt();
