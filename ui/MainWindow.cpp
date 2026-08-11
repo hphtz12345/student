@@ -4,6 +4,7 @@
 #include "StudentPage.h"
 #include "CoursePage.h"
 #include "ScorePage.h"
+#include "StatisticsPage.h"
 #include <QListWidget>
 #include <QStackedWidget>
 #include <QHBoxLayout>
@@ -24,13 +25,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     layout->addWidget(m_stack, 1);
     setCentralWidget(central);
 
-    // 占位页面,后续任务逐个替换为真实页面
     addPage(new StudentPage, "学生管理");
     addPage(new TeacherPage, "教师管理");
     addPage(new ClassPage, "班级管理");
     addPage(new CoursePage, "课程管理");
     addPage(new ScorePage, "成绩管理");
-    addPage(new QLabel("统计分析"), "统计分析");
+    addPage(new StatisticsPage, "统计分析");
 
     connect(m_nav, &QListWidget::currentRowChanged,
             m_stack, &QStackedWidget::setCurrentIndex);
