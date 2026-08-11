@@ -5,7 +5,7 @@ class QComboBox;
 class QPushButton;
 class QVBoxLayout;
 class QHBoxLayout;
-class QGridLayout;
+class QTabWidget;
 // Qt 6 中 QtCharts 类位于全局命名空间(QT_BEGIN_NAMESPACE 展开为空)
 class QChart;
 class QChartView;
@@ -20,7 +20,7 @@ private slots:
     void refreshCharts();
 private:
     QComboBox *m_courseCombo;
-    QGridLayout *m_chartLayout;
+    QTabWidget *m_tabs;
     void reloadFilters();
     void clearChartArea();
     QChart *buildClassAvgChart();

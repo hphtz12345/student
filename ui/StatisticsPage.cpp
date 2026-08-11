@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QGridLayout>
+#include <QTabWidget>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPainter>
@@ -38,12 +38,17 @@ StatisticsPage::StatisticsPage(QWidget *parent) : QWidget(parent) {
     bar->addWidget(m_courseCombo);
     bar->addWidget(btnRefresh);
 
-    m_chartLayout = new QGridLayout;
-    m_chartLayout->setSpacing(8);
+    // 二级菜单:选项卡切换查看不同类型的统计图表
+    m_tabs = new QTabWidget;
+    for (const QString &tabName : {"各班平均分", "成绩分数段分布", "各课程平均分"}) {
+        auto *page = new QWidget;
+        page->setLayout(new QVBoxLayout);
+        m_tabs->addTab(page, tabName);
+    }
 
     auto *layout = new QVBoxLayout(this);
     layout->addLayout(bar);
-    layout->addLayout(m_chartLayout, 1);
+    layout->addWidget(m_tabs, 1);
 
     connect(btnRefresh, &QPushButton::clicked, this, &StatisticsPage::refreshCharts);
     connect(m_courseCombo, &QComboBox::currentIndexChanged, this, &StatisticsPage::refreshCharts);
@@ -69,10 +74,12 @@ void StatisticsPage::reloadFilters() {
 }
 
 void StatisticsPage::clearChartArea() {
-    while (m_chartLayout->count()) {
-        QLayoutItem *item = m_chartLayout->takeAt(0);
-        if (item->widget()) { item->widget()->deleteLater(); }
-        delete item;
+    for (int i = 0; i < m_tabs->count(); ++i) {
+        QLayout *l = m_tabs->widget(i)->layout();
+        while (QLayoutItem *item = l->takeAt(0)) {
+            if (item->widget()) { item->widget()->deleteLater(); }
+            delete item;
+        }
     }
 }
 
@@ -175,8 +182,8 @@ void StatisticsPage::refreshCharts() {
         v->setRenderHint(QPainter::Antialiasing);
         v->setMinimumSize(320, 260);
     }
-    // 上排:各班平均分 + 分数段分布;下排:各课程平均分横向条形图横跨整行
-    m_chartLayout->addWidget(v1, 0, 0);
-    m_chartLayout->addWidget(v2, 0, 1);
-    m_chartLayout->addWidget(v3, 1, 0, 1, 2);
+    // 每张图放进对应的选项卡页,单图显示空间更大
+    m_tabs->widget(0)->layout()->addWidget(v1);
+    m_tabs->widget(1)->layout()->addWidget(v2);
+    m_tabs->widget(2)->layout()->addWidget(v3);
 }

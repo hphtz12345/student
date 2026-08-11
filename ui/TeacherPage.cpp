@@ -71,6 +71,7 @@ void TeacherPage::refresh() {
     m_model->load(sql, args);
     if (!m_model->lastError().isEmpty())
         QMessageBox::critical(this, "数据库错误", m_model->lastError());
+    m_view->resizeColumnsToContents();
 }
 
 void TeacherPage::onAdd() {
