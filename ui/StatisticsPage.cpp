@@ -4,6 +4,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPainter>
@@ -37,7 +38,8 @@ StatisticsPage::StatisticsPage(QWidget *parent) : QWidget(parent) {
     bar->addWidget(m_courseCombo);
     bar->addWidget(btnRefresh);
 
-    m_chartLayout = new QHBoxLayout;
+    m_chartLayout = new QGridLayout;
+    m_chartLayout->setSpacing(8);
 
     auto *layout = new QVBoxLayout(this);
     layout->addLayout(bar);
@@ -171,6 +173,10 @@ void StatisticsPage::refreshCharts() {
     QChartView *v3 = new QChartView(buildCourseAvgChart());
     for (QChartView *v : {v1, v2, v3}) {
         v->setRenderHint(QPainter::Antialiasing);
-        m_chartLayout->addWidget(v);
+        v->setMinimumSize(320, 260);
     }
+    // 上排:各班平均分 + 分数段分布;下排:各课程平均分横向条形图横跨整行
+    m_chartLayout->addWidget(v1, 0, 0);
+    m_chartLayout->addWidget(v2, 0, 1);
+    m_chartLayout->addWidget(v3, 1, 0, 1, 2);
 }
