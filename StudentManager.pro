@@ -6,8 +6,10 @@ TEMPLATE = app
 SOURCES += \
     main.cpp \
     database/DbManager.cpp \
-    ui/DbConfigDialog.cpp
+    ui/DbConfigDialog.cpp \
+    ui/LoginDialog.cpp
 
 HEADERS += \
     database/DbManager.h \
-    ui/DbConfigDialog.h
+    ui/DbConfigDialog.h \
+    ui/LoginDialog.h

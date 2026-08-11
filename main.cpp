@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include "database/DbManager.h"
 #include "ui/DbConfigDialog.h"
+#include "ui/LoginDialog.h"
 
 // 从 exe 目录 config.ini 读取数据库配置(QSettings IniFormat)
 static void loadDbConfig(DbConfig &cfg) {
@@ -95,6 +96,9 @@ int main(int argc, char *argv[]) {
         }
         saveDbConfig(cfg);
     }
-    // TODO(Task 5): 弹出登录窗口
+    // 弹出登录窗口,登录成功(账号通过校验)后进入主程序
+    LoginDialog dlg;
+    if (dlg.exec() != QDialog::Accepted) return 0;
+    // TODO(Task 6): 打开 MainWindow
     return 0;
 }
