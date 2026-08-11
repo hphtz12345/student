@@ -50,10 +50,11 @@ DbConfig DbConfigDialog::config() const {
 
 void DbConfigDialog::onTestConnection() {
     DbConfig cfg = config();
-    QString err;
     DbManager &db = DbManager::instance();
     bool wasOpen = db.isOpen();
+    DbConfig orig = db.config(); // 缓存原配置(修复点:db.open 成功会覆盖 m_cfg)
     if (wasOpen) db.close();
+    QString err;
     if (db.open(cfg, &err)) {
         m_statusLabel->setText("连接成功");
         db.close(); // 正式连接由 main 打开
@@ -62,6 +63,6 @@ void DbConfigDialog::onTestConnection() {
     }
     if (wasOpen) {
         QString e2;
-        db.open(DbManager::instance().config(), &e2); // 恢复原连接
+        db.open(orig, &e2); // 恢复原连接(用缓存的 orig,而非已被覆盖的 config())
     }
 }
