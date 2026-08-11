@@ -22,12 +22,17 @@ UserEditDialog::UserEditDialog(const QVariantMap &user, bool lockRole, QWidget *
     m_roleCombo = new QComboBox;
     m_roleCombo->addItem("管理员", "admin");
     m_roleCombo->addItem("普通用户", "user");
-    // 编辑模式才回填角色;新增模式保持默认 index 0(管理员),避免空角色
-    if (m_edit)
+    // 编辑模式回填角色;新增模式默认选中"普通用户",避免误建管理员
+    if (m_edit) {
         m_roleCombo->setCurrentIndex(m_roleCombo->findData(user.value("role").toString()));
-    // 编辑自己时禁止修改角色,防止把自己降级后锁死系统
-    if (lockRole)
+    } else {
+        m_roleCombo->setCurrentIndex(m_roleCombo->findData("user"));
+    }
+    // 编辑自己时禁止修改用户名和角色,防止改名绕过权限校验或把自己降级后锁死系统
+    if (lockRole) {
+        m_userEdit->setEnabled(false);
         m_roleCombo->setEnabled(false);
+    }
     m_passEdit = new QLineEdit;
     m_passEdit->setEchoMode(QLineEdit::Password);
     m_passEdit->setPlaceholderText(m_edit ? "留空表示不修改密码" : "请输入初始密码");
