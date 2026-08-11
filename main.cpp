@@ -3,6 +3,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QSettings>
+#include <QFile>
 #include <QMessageBox>
 #include "database/DbManager.h"
 #include "ui/DbConfigDialog.h"
@@ -78,11 +79,22 @@ static int runDbTest() {
     return 0;
 }
 
+// 加载全局 QSS 样式:优先 exe 同目录 resources/,回退源码目录
+static void loadStyleSheet(QApplication &app) {
+    QString path = QCoreApplication::applicationDirPath() + "/resources/style.qss";
+    QFile styleFile(path);
+    if (!styleFile.exists())
+        styleFile.setFileName(QCoreApplication::applicationDirPath() + "/../resources/style.qss");
+    if (styleFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        app.setStyleSheet(QString::fromUtf8(styleFile.readAll()));
+}
+
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QStringList args = QCoreApplication::arguments();
     if (args.contains("--db-test"))
         return runDbTest();
+    loadStyleSheet(app);
     DbConfig cfg;
     loadDbConfig(cfg);
     if (!DbManager::instance().open(cfg)) {
