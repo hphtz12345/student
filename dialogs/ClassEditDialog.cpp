@@ -24,7 +24,9 @@ ClassEditDialog::ClassEditDialog(const QVariantMap &data, QWidget *parent) : QDi
     m_headTeacher->addItem("(无)", QVariant());
     while (q.next()) {
         m_headTeacher->addItem(q.value("name").toString(), q.value("id"));
-        if (data.contains("head_teacher_id") && q.value("id") == data.value("head_teacher_id"))
+        // 类型安全回填:QVariant 统一转 int 比较;data 无该字段或为 NULL 时保持 "(无)"
+        const QVariant htid = data.value("head_teacher_id");
+        if (htid.isValid() && !htid.isNull() && htid.toInt() == q.value("id").toInt())
             m_headTeacher->setCurrentIndex(m_headTeacher->count() - 1);
     }
 
