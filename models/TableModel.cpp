@@ -1,6 +1,7 @@
 #include "TableModel.h"
 #include "../database/DbManager.h"
 #include <QSqlQuery>
+#include <QSqlRecord>
 
 TableModel::TableModel(QObject *parent) : QAbstractTableModel(parent) {}
 
@@ -18,10 +19,11 @@ void TableModel::load(const QString &sql, const QVariantList &args) {
     if (!q.isActive()) {
         m_error = DbManager::instance().lastError();
     } else {
+        QSqlRecord rec = q.record();
         while (q.next()) {
             QVariantMap row;
-            for (const auto &col : m_columns)
-                row[col.first] = q.value(col.first);
+            for (int i = 0; i < rec.count(); ++i)
+                row[rec.fieldName(i)] = q.value(i);
             m_rows.append(row);
         }
     }
