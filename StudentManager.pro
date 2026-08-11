@@ -11,7 +11,9 @@ SOURCES += \
     ui/LoginDialog.cpp \
     ui/MainWindow.cpp \
     ui/ClassPage.cpp \
-    dialogs/ClassEditDialog.cpp
+    ui/TeacherPage.cpp \
+    dialogs/ClassEditDialog.cpp \
+    dialogs/TeacherEditDialog.cpp
 
 HEADERS += \
     database/DbManager.h \
@@ -20,4 +22,6 @@ HEADERS += \
     ui/LoginDialog.h \
     ui/MainWindow.h \
     ui/ClassPage.h \
-    dialogs/ClassEditDialog.h
+    ui/TeacherPage.h \
+    dialogs/ClassEditDialog.h \
+    dialogs/TeacherEditDialog.h

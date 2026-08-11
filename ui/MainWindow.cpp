@@ -1,5 +1,6 @@
 #include "MainWindow.h"
 #include "ClassPage.h"
+#include "TeacherPage.h"
 #include <QListWidget>
 #include <QStackedWidget>
 #include <QHBoxLayout>
@@ -22,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
     // 占位页面,后续任务逐个替换为真实页面
     addPage(new QLabel("学生管理"), "学生管理");
-    addPage(new QLabel("教师管理"), "教师管理");
+    addPage(new TeacherPage, "教师管理");
     addPage(new ClassPage, "班级管理");
     addPage(new QLabel("课程管理"), "课程管理");
     addPage(new QLabel("成绩管理"), "成绩管理");
