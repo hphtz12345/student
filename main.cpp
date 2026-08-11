@@ -9,6 +9,7 @@
 #include "ui/DbConfigDialog.h"
 #include "ui/LoginDialog.h"
 #include "ui/MainWindow.h"
+#include "ui/StatisticsPage.h"
 
 // 从 exe 目录 config.ini 读取数据库配置(QSettings IniFormat)
 static void loadDbConfig(DbConfig &cfg) {
@@ -94,6 +95,25 @@ int main(int argc, char *argv[]) {
     QStringList args = QCoreApplication::arguments();
     if (args.contains("--db-test"))
         return runDbTest();
+    // 调试用:连接数据库并导出统计图表 PNG(验证图表渲染)
+    if (args.contains("--stats-dump")) {
+        DbConfig cfg;
+        loadDbConfig(cfg);
+        QString err;
+        if (!DbManager::instance().open(cfg, &err)) {
+            QTextStream(stdout) << "连接失败: " << err << "\n";
+            return 1;
+        }
+        loadStyleSheet(app);
+        StatisticsPage page;
+        page.resize(1400, 900);
+        page.show();
+        app.processEvents();
+        page.dumpChartsTo(QCoreApplication::applicationDirPath() + "/stats_dump");
+        DbManager::instance().close();
+        QTextStream(stdout) << "统计图已导出\n";
+        return 0;
+    }
     loadStyleSheet(app);
     DbConfig cfg;
     loadDbConfig(cfg);

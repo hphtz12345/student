@@ -16,6 +16,8 @@ class StatisticsPage : public QWidget {
     Q_OBJECT
 public:
     explicit StatisticsPage(QWidget *parent = nullptr);
+    // 调试用:把三个选项卡图表渲染为 PNG(prefix_tab1/2/3.png)
+    void dumpChartsTo(const QString &prefix);
 private slots:
     void refreshCharts();
 private:
