@@ -63,7 +63,7 @@ void StudentPage::refresh() {
     QString sql = "SELECT s.id, s.student_no, s.name, s.gender, "
                   "DATE_FORMAT(s.birth_date, '%Y-%m-%d') AS birth_date, "
                   "COALESCE(c.class_name, '') AS class_name, "
-                  "s.enroll_year, s.status, s.phone "
+                  "s.class_id, s.enroll_year, s.status, s.phone "
                   "FROM students s LEFT JOIN classes c ON c.id = s.class_id";
     QVariantList args;
     QString kw = m_search->text().trimmed();

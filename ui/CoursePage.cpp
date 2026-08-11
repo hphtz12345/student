@@ -56,7 +56,7 @@ CoursePage::CoursePage(QWidget *parent) : QWidget(parent) {
 }
 
 void CoursePage::refresh() {
-    QString sql = "SELECT c.id, c.course_no, c.course_name, c.credit, "
+    QString sql = "SELECT c.id, c.course_no, c.course_name, c.credit, c.teacher_id, "
                   "COALESCE(t.name, '') AS teacher_name "
                   "FROM courses c LEFT JOIN teachers t ON t.id = c.teacher_id";
     QVariantList args;
