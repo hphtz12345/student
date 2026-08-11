@@ -7,6 +7,7 @@
 #include "database/DbManager.h"
 #include "ui/DbConfigDialog.h"
 #include "ui/LoginDialog.h"
+#include "ui/MainWindow.h"
 
 // 从 exe 目录 config.ini 读取数据库配置(QSettings IniFormat)
 static void loadDbConfig(DbConfig &cfg) {
@@ -82,7 +83,6 @@ int main(int argc, char *argv[]) {
     QStringList args = QCoreApplication::arguments();
     if (args.contains("--db-test"))
         return runDbTest();
-    // TODO(Task 5): 此处替换为:读配置 → open → LoginDialog → MainWindow
     DbConfig cfg;
     loadDbConfig(cfg);
     if (!DbManager::instance().open(cfg)) {
@@ -99,6 +99,8 @@ int main(int argc, char *argv[]) {
     // 弹出登录窗口,登录成功(账号通过校验)后进入主程序
     LoginDialog dlg;
     if (dlg.exec() != QDialog::Accepted) return 0;
-    // TODO(Task 6): 打开 MainWindow
-    return 0;
+    // 打开主窗口(左侧导航 + 右侧堆叠页)
+    MainWindow w;
+    w.show();
+    return app.exec();
 }
