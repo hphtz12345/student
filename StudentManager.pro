@@ -9,11 +9,15 @@ SOURCES += \
     models/TableModel.cpp \
     ui/DbConfigDialog.cpp \
     ui/LoginDialog.cpp \
-    ui/MainWindow.cpp
+    ui/MainWindow.cpp \
+    ui/ClassPage.cpp \
+    dialogs/ClassEditDialog.cpp
 
 HEADERS += \
     database/DbManager.h \
     models/TableModel.h \
     ui/DbConfigDialog.h \
     ui/LoginDialog.h \
-    ui/MainWindow.h
+    ui/MainWindow.h \
+    ui/ClassPage.h \
+    dialogs/ClassEditDialog.h
