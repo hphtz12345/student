@@ -16,6 +16,9 @@ SOURCES += \
     ui/CoursePage.cpp \
     ui/ScorePage.cpp \
     ui/StatisticsPage.cpp \
+    ui/UserPage.cpp \
+    dialogs/UserEditDialog.cpp \
+    dialogs/UserPasswordDialog.cpp \
     dialogs/ClassEditDialog.cpp \
     dialogs/TeacherEditDialog.cpp \
     dialogs/StudentEditDialog.cpp \
@@ -34,6 +37,9 @@ HEADERS += \
     ui/CoursePage.h \
     ui/ScorePage.h \
     ui/StatisticsPage.h \
+    ui/UserPage.h \
+    dialogs/UserEditDialog.h \
+    dialogs/UserPasswordDialog.h \
     dialogs/ClassEditDialog.h \
     dialogs/TeacherEditDialog.h \
     dialogs/StudentEditDialog.h \

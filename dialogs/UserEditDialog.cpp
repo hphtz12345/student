@@ -22,7 +22,9 @@ UserEditDialog::UserEditDialog(const QVariantMap &user, bool lockRole, QWidget *
     m_roleCombo = new QComboBox;
     m_roleCombo->addItem("管理员", "admin");
     m_roleCombo->addItem("普通用户", "user");
-    m_roleCombo->setCurrentIndex(m_roleCombo->findData(user.value("role").toString()));
+    // 编辑模式才回填角色;新增模式保持默认 index 0(管理员),避免空角色
+    if (m_edit)
+        m_roleCombo->setCurrentIndex(m_roleCombo->findData(user.value("role").toString()));
     // 编辑自己时禁止修改角色,防止把自己降级后锁死系统
     if (lockRole)
         m_roleCombo->setEnabled(false);
