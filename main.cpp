@@ -2,7 +2,31 @@
 #include <QCoreApplication>
 #include <QTextStream>
 #include <QDebug>
+#include <QSettings>
+#include <QMessageBox>
 #include "database/DbManager.h"
+#include "ui/DbConfigDialog.h"
+
+// 从 exe 目录 config.ini 读取数据库配置(QSettings IniFormat)
+static void loadDbConfig(DbConfig &cfg) {
+    QSettings s(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    cfg.host = s.value("db/host", cfg.host).toString();
+    cfg.port = s.value("db/port", cfg.port).toInt();
+    cfg.dbName = s.value("db/dbname", cfg.dbName).toString();
+    cfg.user = s.value("db/user", cfg.user).toString();
+    cfg.password = s.value("db/password", cfg.password).toString();
+}
+
+// 将数据库配置保存到 exe 目录 config.ini
+static void saveDbConfig(const DbConfig &cfg) {
+    QSettings s(QCoreApplication::applicationDirPath() + "/config.ini", QSettings::IniFormat);
+    s.setValue("db/host", cfg.host);
+    s.setValue("db/port", cfg.port);
+    s.setValue("db/dbname", cfg.dbName);
+    s.setValue("db/user", cfg.user);
+    s.setValue("db/password", cfg.password);
+    s.sync();
+}
 
 // 数据库自检模式:不启动 GUI,顺序验证连接与 CRUD
 static int runDbTest() {
@@ -58,5 +82,19 @@ int main(int argc, char *argv[]) {
     if (args.contains("--db-test"))
         return runDbTest();
     // TODO(Task 5): 此处替换为:读配置 → open → LoginDialog → MainWindow
+    DbConfig cfg;
+    loadDbConfig(cfg);
+    if (!DbManager::instance().open(cfg)) {
+        DbConfigDialog dlg(cfg);
+        if (dlg.exec() != QDialog::Accepted) return 0;
+        cfg = dlg.config();
+        QString err;
+        if (!DbManager::instance().open(cfg, &err)) {
+            QMessageBox::critical(nullptr, "连接失败", "无法连接数据库:\n" + err);
+            return 1;
+        }
+        saveDbConfig(cfg);
+    }
+    // TODO(Task 5): 弹出登录窗口
     return 0;
 }
