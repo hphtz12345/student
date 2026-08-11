@@ -18,6 +18,7 @@ private slots:
     void onEdit();
     void onDelete();
 private:
+    void reloadFilters();
     QComboBox *m_classFilter;
     QComboBox *m_courseFilter;
     QLineEdit *m_semesterFilter;

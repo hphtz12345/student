@@ -23,8 +23,16 @@ StudentEditDialog::StudentEditDialog(const QVariantMap &data, QWidget *parent) :
     m_birth = new QDateEdit;
     m_birth->setCalendarPopup(true);
     m_birth->setDisplayFormat("yyyy-MM-dd");
+    // 日期等于最小日期(1900-01-01)时显示"未设置",fields() 中视为 NULL
+    m_birth->setSpecialValueText("未设置");
+    m_birth->setMinimumDate(QDate(1900, 1, 1));
     QDate birth = data.value("birth_date").toDate();
-    m_birth->setDate(birth.isValid() ? birth : QDate(2000, 1, 1));
+    if (!data.isEmpty() && !birth.isValid()) {
+        // 编辑模式且出生日期为 NULL:保持"未设置",保存时仍为 NULL,不改写数据
+        m_birth->setDate(m_birth->minimumDate());
+    } else {
+        m_birth->setDate(birth.isValid() ? birth : QDate(2000, 1, 1));
+    }
 
     m_phone = new QLineEdit(data.value("phone").toString());
     m_email = new QLineEdit(data.value("email").toString());
@@ -76,11 +84,15 @@ StudentEditDialog::StudentEditDialog(const QVariantMap &data, QWidget *parent) :
 }
 
 QVariantMap StudentEditDialog::fields() const {
+    // 日期等于最小日期(1900-01-01)时视为"未设置",返回空 QVariant 以绑定 NULL
+    QVariant birthDate;
+    if (m_birth->date() != m_birth->minimumDate())
+        birthDate = m_birth->date().toString("yyyy-MM-dd");
     return {
         {"student_no", m_no->text().trimmed()},
         {"name", m_name->text().trimmed()},
         {"gender", m_gender->currentText()},
-        {"birth_date", m_birth->date().toString("yyyy-MM-dd")},
+        {"birth_date", birthDate},
         {"phone", m_phone->text().trimmed()},
         {"email", m_email->text().trimmed()},
         {"class_id", m_classCombo->currentData()},

@@ -20,6 +20,7 @@ private slots:
 private:
     QComboBox *m_courseCombo;
     QHBoxLayout *m_chartLayout;
+    void reloadFilters();
     void clearChartArea();
     QChart *buildClassAvgChart();
     QChart *buildScoreDistChart();

@@ -37,6 +37,7 @@ StudentPage::StudentPage(QWidget *parent) : QWidget(parent) {
         {"enroll_year", "入学年份"},
         {"status", "状态"},
         {"phone", "电话"},
+        {"email", "邮箱"},
     });
 
     m_view = new QTableView;
@@ -63,7 +64,7 @@ void StudentPage::refresh() {
     QString sql = "SELECT s.id, s.student_no, s.name, s.gender, "
                   "DATE_FORMAT(s.birth_date, '%Y-%m-%d') AS birth_date, "
                   "COALESCE(c.class_name, '') AS class_name, "
-                  "s.class_id, s.enroll_year, s.status, s.phone "
+                  "s.class_id, s.enroll_year, s.status, s.phone, s.email "
                   "FROM students s LEFT JOIN classes c ON c.id = s.class_id";
     QVariantList args;
     QString kw = m_search->text().trimmed();

@@ -10,6 +10,7 @@
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
 #include <QtCharts/QBarSeries>
+#include <QtCharts/QHorizontalBarSeries>
 #include <QtCharts/QBarSet>
 #include <QtCharts/QBarCategoryAxis>
 #include <QtCharts/QValueAxis>
@@ -25,11 +26,7 @@ StatisticsPage::StatisticsPage(QWidget *parent) : QWidget(parent) {
     title->setStyleSheet("font-size: 16px; font-weight: bold;");
 
     m_courseCombo = new QComboBox;
-    QSqlQuery qc = DbManager::instance().execQuery(
-        "SELECT id, course_no, course_name FROM courses ORDER BY course_no");
-    while (qc.next())
-        m_courseCombo->addItem(qc.value("course_no").toString() + " " + qc.value("course_name").toString(),
-                               qc.value("id"));
+    reloadFilters();
 
     auto *btnRefresh = new QPushButton("刷新图表");
 
@@ -52,6 +49,23 @@ StatisticsPage::StatisticsPage(QWidget *parent) : QWidget(parent) {
     refreshCharts();
 }
 
+void StatisticsPage::reloadFilters() {
+    // 保留当前选中,重建期间屏蔽信号避免触发 refreshCharts
+    QVariant cur = m_courseCombo->currentData();
+    m_courseCombo->blockSignals(true);
+    m_courseCombo->clear();
+    m_courseCombo->addItem("全部课程", QVariant());
+    QSqlQuery qc = DbManager::instance().execQuery(
+        "SELECT id, course_no, course_name FROM courses ORDER BY course_no");
+    while (qc.next()) {
+        m_courseCombo->addItem(qc.value("course_no").toString() + " " + qc.value("course_name").toString(),
+                               qc.value("id"));
+        if (!cur.isNull() && qc.value("id") == cur)
+            m_courseCombo->setCurrentIndex(m_courseCombo->count() - 1);
+    }
+    m_courseCombo->blockSignals(false);
+}
+
 void StatisticsPage::clearChartArea() {
     while (m_chartLayout->count()) {
         QLayoutItem *item = m_chartLayout->takeAt(0);
@@ -66,6 +80,9 @@ QChart *StatisticsPage::buildClassAvgChart() {
         "FROM scores sc JOIN students st ON st.id = sc.student_id "
         "JOIN classes c ON c.id = st.class_id "
         "GROUP BY c.id ORDER BY avg_score DESC");
+    if (!q.isActive()) {
+        QMessageBox::critical(this, "数据库错误", DbManager::instance().lastError());
+    }
     auto *chart = new QChart;
     chart->setTitle("各班平均分");
     auto *series = new QBarSeries;
@@ -98,6 +115,9 @@ QChart *StatisticsPage::buildScoreDistChart() {
         "ELSE '不及格' END AS band, COUNT(*) AS cnt "
         "FROM scores WHERE (? <= 0 OR course_id = ?) GROUP BY band",
         {courseId, courseId});
+    if (!q.isActive()) {
+        QMessageBox::critical(this, "数据库错误", DbManager::instance().lastError());
+    }
     auto *chart = new QChart;
     chart->setTitle("成绩分数段分布");
     auto *series = new QPieSeries;
@@ -115,9 +135,13 @@ QChart *StatisticsPage::buildCourseAvgChart() {
         "SELECT c.course_name, ROUND(AVG(sc.score), 1) AS avg_score "
         "FROM scores sc JOIN courses c ON c.id = sc.course_id "
         "GROUP BY c.id ORDER BY avg_score DESC");
+    if (!q.isActive()) {
+        QMessageBox::critical(this, "数据库错误", DbManager::instance().lastError());
+    }
     auto *chart = new QChart;
     chart->setTitle("各课程平均分");
-    auto *series = new QBarSeries;
+    // 规格 §5.4:各课程平均分为横向条形图
+    auto *series = new QHorizontalBarSeries;
     auto *set = new QBarSet("平均分");
     QStringList cats;
     while (q.next()) {
@@ -126,19 +150,21 @@ QChart *StatisticsPage::buildCourseAvgChart() {
     }
     series->append(set);
     chart->addSeries(series);
-    auto *axisX = new QBarCategoryAxis;
-    axisX->append(cats);
-    chart->addAxis(axisX, Qt::AlignBottom);
-    series->attachAxis(axisX);
-    auto *axisY = new QValueAxis;
-    axisY->setRange(0, 100);
+    // 横向条形图:类别轴在左侧,数值轴在下侧
+    auto *axisY = new QBarCategoryAxis;
+    axisY->append(cats);
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
+    auto *axisX = new QValueAxis;
+    axisX->setRange(0, 100);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
     chart->legend()->hide();
     return chart;
 }
 
 void StatisticsPage::refreshCharts() {
+    reloadFilters();
     clearChartArea();
     QChartView *v1 = new QChartView(buildClassAvgChart());
     QChartView *v2 = new QChartView(buildScoreDistChart());
