@@ -1,4 +1,4 @@
 release/
 debug/
-drivers/
-temp_verify/
+drivers/libmysql.a
+drivers/libmysql.def
